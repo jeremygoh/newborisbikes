@@ -16,7 +16,7 @@ class DockingStation
 		@bikes.select{|bike| bike.broken?}
 	end
 
-	def rentable_bikes
+	def working_bikes
 		@bikes.reject{|bike| bike.broken?}
 	end
 
@@ -34,7 +34,7 @@ class DockingStation
 		elsif has_broken_bikes?
 			"Can't rent a bike as they are all broken."
 		else
-			@bikes.delete(rentable_bikes.pop)
+			@bikes.delete(working_bikes.pop)
 		end
 	end
 

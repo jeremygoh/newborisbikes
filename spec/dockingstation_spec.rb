@@ -37,22 +37,18 @@ let(:my_station){ DockingStation.new }
 		my_station.rent(:bike).should eq "Can't rent a bike as they are all broken."
 	end
 
-	it 'has rentable bikes' do
+	it 'has working bikes' do
 		bike = double :bike, broken?: false
 		my_station.receive(bike)
-		my_station.rentable_bikes.should include bike
+		my_station.working_bikes.should include bike
 	end
 
 #could I make the test below
 	it 'has one less rentable bike after renting out a bike' do
-		bike1 = double :bike, broken?:false
-		bike2 = double :bike, broken?:false
-		my_station.receive(bike1)
-		my_station.receive(bike2)
-		workingbikesnumber = my_station.rentable_bikes.count
-		my_station.rent(:bike)
-		finalbikesnumber = my_station.rentable_bikes.count
-		(workingbikesnumber - finalbikesnumber).should eq 1
+		bike = double :bike, broken?:false
+		my_station.receive(bike)
+		my_station.rent(bike)
+		my_station.working_bikes.size.should eq 0
 	end
 	
 	it "can't accept a bike if it is at maximum capacity, i.e. 10" do
