@@ -12,4 +12,12 @@ class Bike
 		@broken = true
 	end
 
+	def repair!
+		if !@broken
+			"Can't repair a working bike!"
+		else
+			@broken = false
+		end
+	end
+
 end
