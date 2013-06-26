@@ -8,11 +8,13 @@ class Cyclist
 		!@possession.empty?
 	end
 
-	def rent(bike)
+	def rent(station)
 		if has_bike?
 			"Can't rent a bike if you have one already."
+		elsif !station.has_working_bikes?
+			station.rent
 		else
-			@possession << bike
+			@possession << station.rent 
 		end
 	end
 
@@ -26,8 +28,11 @@ class Cyclist
 	end
 
 	def return_bike(station)
-		@possession.pop
-		station.receive
+		if !has_bike?
+			"Can't return bike since you don't have one!"
+		else	
+			station.receive(@possession.pop)
+		end
 	end
 
 end

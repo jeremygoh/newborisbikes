@@ -1,29 +1,38 @@
 require 'dockingstation'
 
 describe DockingStation do
-let(:my_station){ DockingStation.new }
+let(:my_station){ DockingStation.new(0) }
+context "initial number of bikes" do
+	it "should have no bikes if initialized with zero bikes" do
+		my_station.has_bikes?.should eq false
+	end
 
-	it "should not have bikes by default" do
-		my_station.has_bikes?.should be_false
-	end	
+	it "should have 10 bikes if initialized with 10 bikes" do
+		stocked_station = DockingStation.new(10)
+		stocked_station.has_bikes?.should be_true
+		(stocked_station.working_bikes.size + stocked_station.broken_bikes.size).should eq 10
+	end
+
+end
+
 
 context "Renting a bike" do
 	it "should rent a bike and have one less bike" do
-		bike = double :bike, broken?: false
+		bike = double :bike, broken?:false
 		my_station.receive(bike)
-		my_station.rent(bike)
+		my_station.rent
 		my_station.should_not have_bikes
 	end
 
 	it "should not rent a bike if it doesn't have any" do
-		my_station.rent(:bike).should eq "Can't rent a bike. There aren't any bikes available."
+		my_station.rent.should eq "Can't rent a bike. There aren't any bikes available."
 	end
 
 	it "can't rent a bike if it only has a broken bike" do
 		bike = double :bike
 		bike.should_receive(:broken?).and_return true
 		my_station.receive(bike)
-		my_station.rent(:bike).should eq "Can't rent a bike as they are all broken."
+		my_station.rent.should eq "Can't rent a bike as they are all broken."
 	end
 
 	it "can rent a bike if it has a working bike and one non-working bike" do
@@ -31,14 +40,14 @@ context "Renting a bike" do
 		broken_bike = double :bike, broken?:true
 		my_station.receive(working_bike)
 		my_station.receive(broken_bike)
-		my_station.rent(working_bike)
+		my_station.rent
 		my_station.working_bikes.size.should eq 0
 	end
 
 	it 'has one less rentable bike after renting out a bike' do
 		bike = double :bike, broken?:false
 		my_station.receive(bike)
-		my_station.rent(bike)
+		my_station.rent
 		my_station.working_bikes.size.should eq 0
 	end
 end
@@ -46,6 +55,7 @@ end
 context "Receiving a bike from a cyclist" do 
 
 	it "should receive a bike and have one more bike" do
+		
 		my_station.receive(:bike)
 		my_station.should have_bikes
 	end
@@ -69,30 +79,28 @@ context "Receiving a bike from a cyclist" do
 	end
 end
 
-#could I make the test below
-
 	
-context "Releasing a bike for a van" do
-	it "can't release a non-broken bike" do
-		bike = double :bike, broken?:false
-		my_station.receive(bike)
-		my_station.release(bike).should eq "Can't release a working bike! You have to rent it!"
-	end
+# context "Releasing a bike for a van" do
+# 	it "can't release a non-broken bike" do
+# 		bike = double :bike, broken?:false
+# 		my_station.receive(bike)
+# 		my_station.release(bike).should eq "Can't release a working bike! You have to rent it!"
+# 	end
 
-	it "can't release a working bike and it should return an error message" do
-		bike = double :bike, broken?:false
-		my_station.receive(bike)
-		my_station.release(bike).should eq "Can't release a working bike! You have to rent it!"
-	end
+# 	it "can't release a working bike and it should return an error message" do
+# 		bike = double :bike, broken?:false
+# 		my_station.receive(bike)
+# 		my_station.release(bike).should eq "Can't release a working bike! You have to rent it!"
+# 	end
 
-	it "can release a broken bike and will have one less broken bike" do
-		bike = double :bike, broken?:true
-		my_station.receive(bike)
-		my_station.broken_bikes.size.should eq 1
-		my_station.release(bike)
-		my_station.broken_bikes.size.should eq 0
-	end
+# 	it "can release a broken bike and will have one less broken bike" do
+# 		bike = double :bike, broken?:true
+# 		my_station.receive(bike)
+# 		my_station.broken_bikes.size.should eq 1
+# 		my_station.release(bike)
+# 		my_station.broken_bikes.size.should eq 0
+# 	end
 
-end
+# end
 
 end

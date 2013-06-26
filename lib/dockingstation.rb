@@ -1,7 +1,9 @@
 class DockingStation
+	attr_reader :bikes
 
-	def initialize
+	def initialize(number)
 		@bikes=[]
+		number.times{@bikes << Bike.new} unless number==0
 	end
 
 	def has_bikes?
@@ -28,7 +30,7 @@ class DockingStation
 		end	
 	end
 
-	def rent(bike)
+	def rent
 		if !has_bikes? 
 			"Can't rent a bike. There aren't any bikes available."
 		elsif !has_working_bikes?

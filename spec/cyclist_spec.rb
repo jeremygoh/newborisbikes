@@ -10,37 +10,55 @@ let(:my_cyclist){Cyclist.new}
 context "Renting a bike" do
 
 	it "should be able to rent a bike and have one" do
-		my_cyclist.rent(:bike)
-		my_cyclist.has_bike?.should be_true
+		station = double :station
+		station.should_receive(:rent).once.and_return :bike
+		station.should_receive(:has_working_bikes?).and_return false
+		my_cyclist.rent(station)
 	end
 
-	it "shouldn't be able to rent a bike if you have one" do
-		my_cyclist.rent(:bike)
-		my_cyclist.rent(:bike).should eq "Can't rent a bike if you have one already."
+	it "shouldn't be able to rent a bike if you have one and will return message" do
+		station = double :station
+		cyclist_with_bike=Cyclist.new
+		cyclist_with_bike.instance_eval('@possession=[:bike]')
+		cyclist_with_bike.rent(station).should eq "Can't rent a bike if you have one already."
 	end
+
+	it "shouldn't be able to rent a bike if the docking station won't let it and will return message" do
+		station = double :station
+		station.should_receive(:has_working_bikes?).and_return false
+		station.should_receive(:rent)
+		my_cyclist.rent(station)
+	end	
 end
 
-	# it "shouldn't be able to rent a bike if there are no working bikes left at the docking station" do
-	# 	station = :dockingstation, 
+	
 context 'Breaking a bike' do
 	it "should be able to break a bike and then have a broken bike" do
 		bike = double :bike
 		bike.should_receive(:break!)
 		bike.should_receive(:broken?).and_return true
-		my_cyclist.rent(bike)
+		station = double :station
+		station.should_receive(:rent).and_return bike
+		station.should_receive(:has_working_bikes?).and_return true
+		my_cyclist.rent(station)
 		my_cyclist.breaks_bike
 		my_cyclist.has_broken_bike?.should be_true
 	end
 end
 
 context 'Returning a bike' do
-	it "should be able to return a bike and have no bike" do
-		my_cyclist.rent(:bike)
-		my_station = double :station
-		my_station.should_receive(:receive)
-		my_cyclist.return_bike(my_station)
-		my_cyclist.has_bike?.should be_false
+	it "should be able to return a bike" do
+		my_cyclist.instance_eval('@possession=[:bike]')
+		station = double :station
+		station.should_receive(:receive)
+		my_cyclist.return_bike(station)
 	end
+
+	it "should not be able to return a bike if it doesn't have one" do
+		my_cyclist.has_bike?.should be_false
+		:station
+		my_cyclist.return_bike(:station).should eq "Can't return bike since you don't have one!"
+	end	
 end
 	
 
