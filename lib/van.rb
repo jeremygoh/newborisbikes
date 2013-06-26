@@ -1,5 +1,7 @@
 class Van
 
+	attr_accessor :bikes
+
 	def initialize
 		@bikes = []
 	end
@@ -8,13 +10,13 @@ class Van
 		!@bikes.empty?
 	end
 
-	def receive_from_docking(bike)
-		if !bike.broken?
-			"Can't receive a working bike!"
-		elsif  @bikes.size == 10
+	def receive_from_docking(station, number)
+		if @bikes.size==10
 			"At maximum capacity. Can't receive anymore bikes!"
-		else	
-			@bikes << bike
+		elsif station.broken_bikes.size < number
+			"There aren't enough broken bikes"
+		else
+			number.times{@bikes << station.release}
 		end
 	end
 
@@ -22,14 +24,12 @@ class Van
 		@bikes.select{|bike| bike.broken?}
 	end
 
-	def deliver(bike)
-		if @bikes.empty?
-			"No bikes to deliver."
-		elsif !bike.broken?
-			"Can't deliver a working bike to the garage!"		
+	def deliver(garage, number)
+		if broken_bikes.empty?
+			"No broken bikes to deliver!"
 		else
-			@bikes.delete(broken_bikes.pop)
-		end	
+			number.times{@bikes.delete(broken_bikes.pop)}
+		end
 	end
 
 	def pick_up(bike)
@@ -46,11 +46,14 @@ class Van
 		@bikes.select{|bike| !bike.broken?}
 	end
 
-	def return(bike)
-		if @bikes.empty?
-			"No bikes to return!"
-		elsif bike.broken?
-			"Can't return a broken bike to the docking station!"
-		end
+	def return(station, number)
+		if number > station.capacity
+			"Not enough space in the dock to return that number of bikes!"
+		elsif number > working_bikes.size
+			"Not enough working bikes to return!"
+		else
+			number.times{ @bikes.delete(working_bikes.pop)}
+		end	
+
 	end
 end

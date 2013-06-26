@@ -22,6 +22,10 @@ class DockingStation
 		@bikes.reject{|bike| bike.broken?}
 	end
 
+	def full?
+		@bikes.size==10
+	end
+
 	def receive(bike)
 		if @bikes.size == 10
 			"Can't receive anymore bikes. Capacity of ten bikes has been reached."
@@ -40,13 +44,17 @@ class DockingStation
 		end
 	end
 
+	def capacity
+		10 - @bikes.size
+	end
+
 	def has_working_bikes?
 		!working_bikes.empty?
 	end
 
-	def release(bike)
-		if !bike.broken?
-			"Can't release a working bike! You have to rent it!"	
+	def release
+		if !has_broken_bikes?
+			"Can't release as no broken bikes!"
 		else
 			@bikes.delete(broken_bikes.pop)
 		end	

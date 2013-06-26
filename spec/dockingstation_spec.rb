@@ -79,28 +79,22 @@ context "Receiving a bike from a cyclist" do
 	end
 end
 
+
 	
-# context "Releasing a bike for a van" do
-# 	it "can't release a non-broken bike" do
-# 		bike = double :bike, broken?:false
-# 		my_station.receive(bike)
-# 		my_station.release(bike).should eq "Can't release a working bike! You have to rent it!"
-# 	end
+context "Releasing a bike for a van" do
+	it "can't release if no broken bikes" do
+		my_station.release.should eq "Can't release as no broken bikes!"
+	end
 
-# 	it "can't release a working bike and it should return an error message" do
-# 		bike = double :bike, broken?:false
-# 		my_station.receive(bike)
-# 		my_station.release(bike).should eq "Can't release a working bike! You have to rent it!"
-# 	end
 
-# 	it "can release a broken bike and will have one less broken bike" do
-# 		bike = double :bike, broken?:true
-# 		my_station.receive(bike)
-# 		my_station.broken_bikes.size.should eq 1
-# 		my_station.release(bike)
-# 		my_station.broken_bikes.size.should eq 0
-# 	end
+	it "can release a broken bike and will have one less broken bike" do
+		bike = double :bike, broken?:true
+		my_station.receive(bike)
+		my_station.broken_bikes.size.should eq 1
+		my_station.release
+		my_station.broken_bikes.size.should eq 0
+	end
 
-# end
+end
 
 end
