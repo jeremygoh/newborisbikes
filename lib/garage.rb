@@ -1,4 +1,5 @@
 class Garage
+	attr_accessor :bikes
 	
 	def initialize
 		@bikes = []
@@ -16,12 +17,14 @@ class Garage
 		end
 	end
 
-	def release(bike)
-		if @bikes.empty?
-			"There are no bikes to release."
-		elsif bike.broken?
-			"We can't release that bike. It's not been repaired yet!"
+	def release(number)
+		if working_bikes.size < number
+			"We don't have enough repaired bikes to release!"
+		else
+			@bikes.delete(working_bikes.pop)
 		end
+
+
 	end
 
 	def repair(bike)

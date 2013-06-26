@@ -10,6 +10,10 @@ class Van
 		!@bikes.empty?
 	end
 
+	def capacity
+		10-@bikes
+	end
+
 	def receive_from_docking(station, number)
 		if @bikes.size==10
 			"At maximum capacity. Can't receive anymore bikes!"
@@ -32,14 +36,14 @@ class Van
 		end
 	end
 
-	def pick_up(bike)
-		if bike.broken?
-			"Can't pick up bike as it hasn't been repaired yet."
-		elsif @bikes.size == 10
+	def pick_up(garage, number)
+		if garage.working_bikes.size < number
+			"Not enough working bikes to collect from the garage!"
+		elsif capacity < number
 			"At maximum capacity. Can't pick up anymore bikes."
 		else
-			@bikes << bike
-		end
+			@bikes << garage.release(number)
+		end	
 	end
 
 	def working_bikes
