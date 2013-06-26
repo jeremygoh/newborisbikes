@@ -27,15 +27,21 @@ let(:my_garage){Garage.new}
 	end
 
 	context "Releasing a bike" do
+		it "should be able to release a number of bikes and have that many less bikes" do
+			bike = double :bike, broken?:false
+			my_garage.bikes = [bike]
+			my_garage.working_bikes.size.should eq 1
+			my_garage.release(1)
+			my_garage.working_bikes.size.should eq 0
+		end	
+
 		it "should not be able to release a broken bike" do
 			bike = double :bike, broken?: true
-			my_garage.receive(bike)
-			my_garage.release(bike).should eq "We can't release that bike. It's not been repaired yet!"
+			my_garage.bikes = [bike]
+			my_garage.release(1).should eq "We don't have enough repaired bikes to release!"
 		end
 
-		it "should not be able to release a bike if it has none" do
-			my_garage.release(:bike).should eq "There are no bikes to release."
-		end
+		
 	end
 
 	context "Repairing a bike" do

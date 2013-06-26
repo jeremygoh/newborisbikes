@@ -58,26 +58,36 @@ context "Delivering a bike to the garage for repair" do
 		my_van.deliver(:garage, 2)
 		my_van.broken_bikes.size.should eq 1
 	end
+end
 
-# context "Picking up a bike from a garage which has been repaired" do
-# 	it "should not be able to pick up a broken bike from the garage" do
-# 		bike = double :bike, broken?:true
-# 		my_van.pick_up(bike).should eq "Can't pick up bike as it hasn't been repaired yet."
-# 	end
+context "Picking up a bike from a garage which has been repaired" do
+
 
 	
-# 	it "should pick up a working bike from the garage and have one more working bike" do
-# 		bike = double :bike, broken?: false
-# 		my_van.pick_up(bike)
+	it "should pick up a working bike from the garage and have one more working bike" do
+		garage = double :garage
+		bike = double :bike, broken?:false
+		my_van.should_receive(:capacity).and_return 10
+		garage.should_receive(:release).and_return bike
+		garage.should_receive(:working_bikes).and_return 1
+		my_van.pick_up(garage, 1)
+		my_van.working_bikes.size.should eq 1
+	end
 
-# 		my_van.working_bikes.size.should eq 1
-# 	end
+	it "should not be able to pick up more working bikes than the garage has" do
+		garage = double garage
+		garage.should_receive(:working_bikes).and_return [:bike]
+		bike = double :bike, broken?:false
+		my_van.pick_up(garage,3).should eq "Not enough working bikes to collect from the garage!"
+	end
 
-# 	it "should not be able to pick up anymore bikes from the garage if at maximum capacity." do
-# 		bike = double :bike, broken?: false
-# 		10.times{my_van.pick_up(bike)}
-# 		my_van.pick_up(bike).should eq "At maximum capacity. Can't pick up anymore bikes."
-# 	end
+	it "should not be able to pick up anymore bikes from the garage if at maximum capacity." do
+		my_van.should_receive(:capacity).and_return 0
+		garage = double :garage
+		garage.should_receive(:working_bikes).and_return [:bike]
+		my_van.pick_up(garage, 1).should eq "At maximum capacity. Can't pick up anymore bikes."
+	end
+
 end
 
 context "Returning a repaired bike to the docking station" do
