@@ -31,11 +31,22 @@ class DockingStation
 	def rent(bike)
 		if !has_bikes? 
 			"Can't rent a bike. There aren't any bikes available."
-		elsif has_broken_bikes?
+		elsif !has_working_bikes?
 			"Can't rent a bike as they are all broken."
 		else
 			@bikes.delete(working_bikes.pop)
 		end
 	end
 
+	def has_working_bikes?
+		!working_bikes.empty?
+	end
+
+	def release(bike)
+		if !bike.broken?
+			"Can't release a working bike! You have to rent it!"	
+		else
+			@bikes.delete(broken_bikes.pop)
+		end	
+	end
 end

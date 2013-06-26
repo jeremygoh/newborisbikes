@@ -10,9 +10,9 @@ class Cyclist
 
 	def rent(bike)
 		if has_bike?
-			"Can't rent a bike if you have on already."
-		else	
-		@possession << bike
+			"Can't rent a bike if you have one already."
+		else
+			@possession << bike
 		end
 	end
 
