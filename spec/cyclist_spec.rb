@@ -36,7 +36,9 @@ end
 context 'Returning a bike' do
 	it "should be able to return a bike and have no bike" do
 		my_cyclist.rent(:bike)
-		my_cyclist.return_bike
+		my_station = double :station
+		my_station.should_receive(:receive)
+		my_cyclist.return_bike(my_station)
 		my_cyclist.has_bike?.should be_false
 	end
 end

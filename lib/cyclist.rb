@@ -25,8 +25,9 @@ class Cyclist
 		@possession.first.broken?
 	end
 
-	def return_bike
+	def return_bike(station)
 		@possession.pop
+		station.receive
 	end
 
 end
