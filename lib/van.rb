@@ -11,7 +11,7 @@ class Van
 	end
 
 	def capacity
-		10-@bikes
+		10-@bikes.size
 	end
 
 	def receive_from_docking(station, number)
@@ -29,10 +29,13 @@ class Van
 	end
 
 	def deliver(garage, number)
-		if broken_bikes.empty?
-			"No broken bikes to deliver!"
+		if broken_bikes.size < number
+			"Not enough broken bikes to deliver!"
 		else
-			number.times{@bikes.delete(broken_bikes.pop)}
+			number.times{
+				garage.receive(broken_bikes.last)
+				@bikes.delete(broken_bikes.pop)
+			}
 		end
 	end
 
@@ -56,7 +59,10 @@ class Van
 		elsif number > working_bikes.size
 			"Not enough working bikes to return!"
 		else
-			number.times{ @bikes.delete(working_bikes.pop)}
+			number.times{ 
+				station.receive(working_bikes.last)
+				@bikes.delete(working_bikes.pop)
+			}
 		end	
 
 	end

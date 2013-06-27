@@ -27,14 +27,24 @@ class Garage
 
 	end
 
-	def repair(bike)
-		if @bikes.empty?
-			"There are no bikes to repair!"
-		elsif !bike.broken?
-			"It is impossible to repair a working bike!"
-		else
-			bike.repair!
+	def broken_bikes
+		@bikes.select{|bike| bike.broken?}
+	end
+
+	def repair(number)
+		if broken_bikes.size < number
+			"Not enough bikes to repair!"
+		else	
+			#need to repair multiple bikes!
+			broken_bikes.pop.repair!
 		end
+		# if @bikes.empty?
+		# 	"There are no bikes to repair!"
+		# elsif !bike.broken?
+		# 	"It is impossible to repair a working bike!"
+		# else
+		# 	bike.repair!
+		# end
 
 	end
 

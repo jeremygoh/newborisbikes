@@ -39,23 +39,29 @@ end
 context "Delivering a bike to the garage for repair" do
 	it "should deliver bikes to the garage and have one less broken bike" do
 		bike = double :bike, broken?:true
+		garage = double :garage
+		station = double :station
+
+		garage.should_receive(:receive)
 		my_van.instance_eval('@bikes=[bike]')
 		my_van.broken_bikes.size.should eq 1
-		my_van.deliver(:garage, 1)
+		my_van.deliver(garage, 1)
 		my_van.broken_bikes.size.should eq 0
 	end
 
-	it "should not be able to deliver a bike to the garage if it has none" do
-		my_van.deliver(:garage, 1).should eq "No broken bikes to deliver!"
+	it "should not be able to deliver a bike to the garage if it doesn't have enough" do
+		my_van.deliver(:garage, 1).should eq "Not enough broken bikes to deliver!"
 	end
 
 	it "should be able to deliver multiple broken bikes to the garage and have that many less broken bikes" do
 		bike = double :bike, broken?:true
 		bike1 = double :bike, broken?:true
 		bike2 = double :bike, broken?:true
+		garage = double :garage
+		garage.should_receive(:receive).twice
 		my_van.instance_eval('@bikes=[bike,bike1,bike2]')
 		my_van.broken_bikes.size.should eq 3
-		my_van.deliver(:garage, 2)
+		my_van.deliver(garage, 2)
 		my_van.broken_bikes.size.should eq 1
 	end
 end
@@ -95,6 +101,7 @@ context "Returning a repaired bike to the docking station" do
 		van_with_working_bike = Van.new
 		bike= double :bike, broken?: false
 		station= double :station, full?:false
+		station.should_receive(:receive)
 		station.should_receive(:capacity).and_return 10
 		van_with_working_bike.instance_eval('@bikes=[bike]')
 		van_with_working_bike.return(station, 1)
@@ -118,6 +125,7 @@ context "Returning a repaired bike to the docking station" do
 		bike2= double :bike, broken?: false
 		van.bikes = [bike, bike1, bike2]
 		station= double :station, capacity:10
+		station.should_receive(:receive).twice
 		van.return(station, 2)
 		van.working_bikes.size.should eq 1
 	end

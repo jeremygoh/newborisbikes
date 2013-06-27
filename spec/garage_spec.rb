@@ -46,18 +46,20 @@ let(:my_garage){Garage.new}
 
 	context "Repairing a bike" do
 
-		it "should not be able to repair a bike if it has none" do
-			bike = double :bike, broken?: true
-			my_garage.repair(bike).should eq "There are no bikes to repair!"
-		end
-
 		it "should be able to repair a bike" do
 			bike = double :bike, broken?: true
 			bike.should_receive(:repair!)
-
-			my_garage.receive(bike)
-			my_garage.repair(bike)
+			my_garage.bikes = [bike]
+			my_garage.broken_bikes.size.should eq 1
+			my_garage.repair(1)
 		end
+
+		it "should not be able to repair more bikes than it has" do
+			my_garage.repair(1).should eq "Not enough bikes to repair!"
+		end
+
+		
+
 	end
 
 end

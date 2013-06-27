@@ -33,17 +33,24 @@ end
 
 	
 context 'Breaking a bike' do
-	it "should be able to break a bike and then have a broken bike" do
+	it "should be able to break a bike" do
 		bike = double :bike
 		bike.should_receive(:break!)
-		bike.should_receive(:broken?).and_return true
-		station = double :station
-		station.should_receive(:rent).and_return bike
-		station.should_receive(:has_working_bikes?).and_return true
-		my_cyclist.rent(station)
+		bike.should_receive(:broken?)
+		my_cyclist.possession = [bike]
 		my_cyclist.breaks_bike
-		my_cyclist.has_broken_bike?.should be_true
 	end
+
+	it "can't break a bike if it doesn't have one" do
+		my_cyclist.breaks_bike.should eq "No bike to break!"
+	end	
+
+	it "can't break a bike if it's already broken" do
+		bike= double :bike, broken?:true
+		my_cyclist.possession = [bike]
+		my_cyclist.has_broken_bike?.should be_true
+		my_cyclist.breaks_bike.should eq "Your bike is already broken!"
+	end	
 end
 
 context 'Returning a bike' do

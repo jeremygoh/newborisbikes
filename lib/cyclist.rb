@@ -1,5 +1,7 @@
 class Cyclist
 
+	attr_accessor :possession
+
 	def initialize
 		@possession = []
 	end	
@@ -20,7 +22,13 @@ class Cyclist
 
 
 	def breaks_bike
-		@possession.first.break!
+		if !has_bike?
+			"No bike to break!"
+		elsif has_broken_bike?
+			"Your bike is already broken!"
+		else	
+			@possession.first.break!
+		end
 	end
 
 	def has_broken_bike?
